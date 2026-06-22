@@ -18,6 +18,9 @@ public class KontrolTrukWheel : MonoBehaviour
     public float kekuatanMotor = 1500f;
     public float sudutBelokMaks = 30f;
 
+    [Header("Koreksi Arah Ban (Ubah di Sini!)")]
+    public Vector3 offsetRotasi = new Vector3(0, 90, 0); // Angka awal untuk dicoba
+
     private float inputMaju;
     private float inputBelok;
 
@@ -56,8 +59,10 @@ public class KontrolTrukWheel : MonoBehaviour
         // Mengambil data posisi fisika roda di dunia game
         collider.GetWorldPose(out posisi, out rotasi);
 
-        // Menyamakan visual ban dengan data fisika tersebut
+        // Menyamakan posisi visual
         meshTransform.position = posisi;
-        meshTransform.rotation = rotasi;
+
+        // Menerapkan rotasi dengan offset yang bisa diedit di Inspector
+        meshTransform.rotation = rotasi * Quaternion.Euler(offsetRotasi);
     }
 }
