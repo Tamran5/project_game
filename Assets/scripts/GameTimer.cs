@@ -9,6 +9,8 @@ public class GameTimer : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         if (gameBerjalan && sisaWaktu > 0)
         {
             sisaWaktu -= Time.deltaTime; // Mengurangi waktu setiap detik

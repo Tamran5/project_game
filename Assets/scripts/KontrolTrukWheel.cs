@@ -18,31 +18,45 @@ public class KontrolTrukWheel : MonoBehaviour
     public float kekuatanMotor = 1500f;
     public float sudutBelokMaks = 30f;
 
-    [Header("Koreksi Arah Ban (Ubah di Sini!)")]
-    public Vector3 offsetRotasi = new Vector3(0, 90, 0); // Angka awal untuk dicoba
+    [Header("Koreksi Arah Ban")]
+    public Vector3 offsetRotasi = new Vector3(0, 90, 0);
 
     private float inputMaju;
     private float inputBelok;
+    private float inputMajuUI;
+    private float inputBelokUI;
 
     void Update()
     {
-        // Membaca input keyboard W/S/A/D
-        inputMaju = Input.GetAxis("Vertical");
-        inputBelok = Input.GetAxis("Horizontal");
+        // Keyboard input
+        float keyboard_maju = Input.GetAxis("Vertical");
+        float keyboard_belok = Input.GetAxis("Horizontal");
+
+        // Gabungkan keyboard + UI button (mana yang lebih besar)
+        inputMaju = keyboard_maju != 0 ? keyboard_maju : inputMajuUI;
+        inputBelok = keyboard_belok != 0 ? keyboard_belok : inputBelokUI;
+    }
+
+    // Dipanggil UIButton
+    public void MoveInput(float input)
+    {
+        inputMajuUI = input;
+    }
+
+    public void SteerInput(float input)
+    {
+        inputBelokUI = input;
     }
 
     void FixedUpdate()
     {
-        // 1. Jalankan roda belakang (Penggerak Belakang / RWD)
         wcBelakangKiri.motorTorque = inputMaju * kekuatanMotor;
         wcBelakangKanan.motorTorque = inputMaju * kekuatanMotor;
 
-        // 2. Belokkan roda depan
         float sudutBelok = inputBelok * sudutBelokMaks;
         wcDepanKiri.steerAngle = sudutBelok;
         wcDepanKanan.steerAngle = sudutBelok;
 
-        // 3. Sinkronkan posisi & rotasi visual ban dengan fisika Wheel Collider
         UpdatePosisiRoda(wcDepanKiri, meshDepanKiri);
         UpdatePosisiRoda(wcDepanKanan, meshDepanKanan);
         UpdatePosisiRoda(wcBelakangKiri, meshBelakangKiri);
@@ -52,17 +66,10 @@ public class KontrolTrukWheel : MonoBehaviour
     void UpdatePosisiRoda(WheelCollider collider, Transform meshTransform)
     {
         if (meshTransform == null) return;
-
         Vector3 posisi;
         Quaternion rotasi;
-
-        // Mengambil data posisi fisika roda di dunia game
         collider.GetWorldPose(out posisi, out rotasi);
-
-        // Menyamakan posisi visual
         meshTransform.position = posisi;
-
-        // Menerapkan rotasi dengan offset yang bisa diedit di Inspector
         meshTransform.rotation = rotasi * Quaternion.Euler(offsetRotasi);
     }
 }
