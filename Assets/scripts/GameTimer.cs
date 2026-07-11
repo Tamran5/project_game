@@ -1,11 +1,21 @@
 using UnityEngine;
-using TMPro; // Wajib ada untuk TextMeshPro
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameTimer : MonoBehaviour
 {
-    public TextMeshProUGUI timerText; // Tarik objek UI kamu ke sini
-    public float sisaWaktu = 60f; // Durasi dalam detik
+    public TextMeshProUGUI timerText;
+    public GameObject levelClearPanel;
+    public GameObject timerObject; // drag GameObject countdown ke sini
+    private float sisaWaktu;
     private bool gameBerjalan = true;
+    private int detikTerakhir = -1;
+
+    void Start()
+    {
+        string namaScene = SceneManager.GetActiveScene().name;
+        sisaWaktu = namaScene == "Level2" ? 300f : 60f;
+    }
 
     void Update()
     {
@@ -13,16 +23,47 @@ public class GameTimer : MonoBehaviour
 
         if (gameBerjalan && sisaWaktu > 0)
         {
-            sisaWaktu -= Time.deltaTime; // Mengurangi waktu setiap detik
-            UpdateTampilanWaktu(sisaWaktu);
+            sisaWaktu -= Time.deltaTime;
+            int detikSekarang = Mathf.FloorToInt(sisaWaktu);
+            if (detikSekarang != detikTerakhir)
+            {
+                detikTerakhir = detikSekarang;
+                UpdateTampilanWaktu(sisaWaktu);
+            }
         }
-        else if (sisaWaktu <= 0)
+        else if (sisaWaktu <= 0 && gameBerjalan)
         {
             sisaWaktu = 0;
             gameBerjalan = false;
-            Debug.Log("Waktu Habis!");
-            // Tambahkan logika game over di sini
+            UpdateTampilanWaktu(0);
+            LevelBerhasil();
         }
+    }
+
+    void LevelBerhasil()
+    {
+        Time.timeScale = 0f;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        // Sembunyikan timer
+        if (timerObject != null)
+            timerObject.SetActive(false);
+
+        string namaScene = SceneManager.GetActiveScene().name;
+        if (namaScene == "Level1")
+        {
+            PlayerPrefs.SetInt("Level1Selesai", 1);
+            PlayerPrefs.Save();
+        }
+        else if (namaScene == "Level2")
+        {
+            PlayerPrefs.SetInt("Level2Selesai", 1);
+            PlayerPrefs.Save();
+        }
+
+        if (levelClearPanel != null)
+            levelClearPanel.SetActive(true);
     }
 
     void UpdateTampilanWaktu(float waktu)

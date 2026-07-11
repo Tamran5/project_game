@@ -4,7 +4,8 @@ using UnityEngine.SceneManagement;
 public class PauseManager : MonoBehaviour
 {
     public GameObject pausePanel;
-    public GameObject timerObject; // drag GameObject countdown ke sini
+    public GameObject timerObject;
+    public GameObject gameOverPanel; // tambah ini
     private bool isPaused = false;
 
     void Update()
@@ -49,5 +50,23 @@ public class PauseManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         Application.Quit();
+    }
+
+    // Dipanggil oleh GameTimer saat waktu habis
+    public void WaktuHabis()
+    {
+        Time.timeScale = 0f;
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+        if (timerObject != null)
+            timerObject.SetActive(false);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void KeLevelSelect()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("LevelSelect");
     }
 }

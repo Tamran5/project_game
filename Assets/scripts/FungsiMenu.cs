@@ -1,14 +1,21 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FungsiMenu : MonoBehaviour
 {
-    // Fungsi ini akan dipanggil saat tombol Quit diklik
     public void KeluarDariGame()
     {
-        // Memunculkan teks di tab Console Unity sebagai tanda tombol berfungsi
-        Debug.Log("Pemain keluar dari game!"); 
-        
-        
-        Application.Quit(); 
+        Debug.Log("Pemain keluar dari game!");
+        Application.Quit();
+    }
+
+    public void BukaLevelSelect()
+    {
+        SceneManager.LoadScene("LevelSelect");
+    }
+
+    public void KeMainMenu()
+    {
+        SceneManager.LoadScene("mainmenu");
     }
 }
