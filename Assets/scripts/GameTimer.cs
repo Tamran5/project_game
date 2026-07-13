@@ -6,7 +6,8 @@ public class GameTimer : MonoBehaviour
 {
     public TextMeshProUGUI timerText;
     public GameObject levelClearPanel;
-    public GameObject timerObject; // drag GameObject countdown ke sini
+    public GameObject gameOverPanel; // panel game over
+    public GameObject timerObject;
     private float sisaWaktu;
     private bool gameBerjalan = true;
     private int detikTerakhir = -1;
@@ -36,19 +37,20 @@ public class GameTimer : MonoBehaviour
             sisaWaktu = 0;
             gameBerjalan = false;
             UpdateTampilanWaktu(0);
-            LevelBerhasil();
+            GameOver(); // waktu habis = game over
         }
     }
 
-    void LevelBerhasil()
+    // Dipanggil FinishLine
+    public void LevelBerhasil()
     {
+        if (!gameBerjalan) return;
+        gameBerjalan = false;
         Time.timeScale = 0f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // Sembunyikan timer
-        if (timerObject != null)
-            timerObject.SetActive(false);
+        if (timerObject != null) timerObject.SetActive(false);
 
         string namaScene = SceneManager.GetActiveScene().name;
         if (namaScene == "Level1")
@@ -64,6 +66,18 @@ public class GameTimer : MonoBehaviour
 
         if (levelClearPanel != null)
             levelClearPanel.SetActive(true);
+    }
+
+    void GameOver()
+    {
+        Time.timeScale = 0f;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        if (timerObject != null) timerObject.SetActive(false);
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
     }
 
     void UpdateTampilanWaktu(float waktu)

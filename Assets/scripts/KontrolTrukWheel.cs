@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class KontrolTrukWheel : MonoBehaviour
 {
+    // --- TAMBAHAN BARU: Variabel pengunci status balapan ---
+    public bool balapanDimulai = false;
+
     [Header("Wheel Colliders Fisika")]
     public WheelCollider wcDepanKiri;
     public WheelCollider wcDepanKanan;
@@ -37,8 +40,16 @@ public class KontrolTrukWheel : MonoBehaviour
 
     void FixedUpdate()
     {
-        float torque = Mathf.Abs(inputMaju) > 0.01f ? inputMaju * kekuatanMotor : 0f;
-        float rem = Mathf.Abs(inputMaju) > 0.01f ? 0f : 300f;
+        // --- TAMBAHAN BARU: Mencegah mobil bergerak sebelum GO! ---
+        // Jika balapanDimulai bernilai false, paksa nilai gas dan belok menjadi 0
+        float gasAktif = balapanDimulai ? inputMaju : 0f;
+        float belokAktif = balapanDimulai ? inputBelok : 0f;
+
+        // Gunakan variabel 'gasAktif' alih-alih 'inputMaju'
+        float torque = Mathf.Abs(gasAktif) > 0.01f ? gasAktif * kekuatanMotor : 0f;
+
+        // Otomatis mengerem (300f) jika tidak ada input gasAktif
+        float rem = Mathf.Abs(gasAktif) > 0.01f ? 0f : 300f;
 
         wcBelakangKiri.motorTorque = torque;
         wcBelakangKanan.motorTorque = torque;
@@ -48,7 +59,8 @@ public class KontrolTrukWheel : MonoBehaviour
         wcBelakangKiri.brakeTorque = rem;
         wcBelakangKanan.brakeTorque = rem;
 
-        float sudutBelok = inputBelok * sudutBelokMaks;
+        // Gunakan variabel 'belokAktif' alih-alih 'inputBelok'
+        float sudutBelok = belokAktif * sudutBelokMaks;
         wcDepanKiri.steerAngle = sudutBelok;
         wcDepanKanan.steerAngle = sudutBelok;
 
