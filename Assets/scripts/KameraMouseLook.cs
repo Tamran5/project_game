@@ -9,20 +9,16 @@ public class KameraMouseLook : MonoBehaviour
 
     void Start()
     {
-        // Hapus cursor lock agar tombol UI bisa ditekan
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        rotasiYaw = transform.eulerAngles.y;
+        rotasiPitch = transform.eulerAngles.x;
     }
 
     void LateUpdate()
     {
-        // Kamera hanya bergerak saat mouse kanan ditekan
-        if (Input.GetMouseButton(1))
-        {
-            rotasiYaw += Input.GetAxis("Mouse X") * sensitivitas;
-            rotasiPitch -= Input.GetAxis("Mouse Y") * sensitivitas;
-            rotasiPitch = Mathf.Clamp(rotasiPitch, -5f, 45f);
-            transform.localRotation = Quaternion.Euler(rotasiPitch, rotasiYaw, 0f);
-        }
+        // Hapus semua Input lama - tidak dipakai di mobile
+        Quaternion targetRotasi = Quaternion.Euler(rotasiPitch, rotasiYaw, 0f);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotasi, Time.deltaTime * 10f);
     }
 }

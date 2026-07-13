@@ -10,8 +10,7 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            TogglePause();
+
     }
 
     public void TogglePause()

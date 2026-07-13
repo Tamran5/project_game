@@ -23,35 +23,30 @@ public class KontrolTrukWheel : MonoBehaviour
 
     private float inputMaju;
     private float inputBelok;
-    private float inputMajuUI;
-    private float inputBelokUI;
-
-    void Update()
-    {
-        // Keyboard input
-        float keyboard_maju = Input.GetAxis("Vertical");
-        float keyboard_belok = Input.GetAxis("Horizontal");
-
-        // Gabungkan keyboard + UI button (mana yang lebih besar)
-        inputMaju = keyboard_maju != 0 ? keyboard_maju : inputMajuUI;
-        inputBelok = keyboard_belok != 0 ? keyboard_belok : inputBelokUI;
-    }
 
     // Dipanggil UIButton
     public void MoveInput(float input)
     {
-        inputMajuUI = input;
+        inputMaju = input;
     }
 
     public void SteerInput(float input)
     {
-        inputBelokUI = input;
+        inputBelok = input;
     }
 
     void FixedUpdate()
     {
-        wcBelakangKiri.motorTorque = inputMaju * kekuatanMotor;
-        wcBelakangKanan.motorTorque = inputMaju * kekuatanMotor;
+        float torque = Mathf.Abs(inputMaju) > 0.01f ? inputMaju * kekuatanMotor : 0f;
+        float rem = Mathf.Abs(inputMaju) > 0.01f ? 0f : 300f;
+
+        wcBelakangKiri.motorTorque = torque;
+        wcBelakangKanan.motorTorque = torque;
+
+        wcDepanKiri.brakeTorque = rem;
+        wcDepanKanan.brakeTorque = rem;
+        wcBelakangKiri.brakeTorque = rem;
+        wcBelakangKanan.brakeTorque = rem;
 
         float sudutBelok = inputBelok * sudutBelokMaks;
         wcDepanKiri.steerAngle = sudutBelok;

@@ -1,0 +1,1 @@
+C:\Kuliah\semester 6\Game Dev\uts_project\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\50463sb6\obj\arm64-v8a
