@@ -6,7 +6,8 @@ public class FinishLine : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        // Mengecek tag "Player" pada objek utama/induk yang memiliki Rigidbody
+        if (other.attachedRigidbody != null && other.attachedRigidbody.CompareTag("Player"))
         {
             gameTimer.LevelBerhasil();
         }
